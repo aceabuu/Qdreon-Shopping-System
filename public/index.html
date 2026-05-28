@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qdreon — Online Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- NAV -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="logo" onclick="navigate('home')">QDREON</a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#" onclick="navigate('home')" data-page="home">Shop</a>
+        <a href="#" onclick="navigate('products')" data-page="products">Products</a>
+        <a href="#" onclick="navigate('orders')" data-page="orders" class="auth-only hidden">My Orders</a>
+        <a href="#" onclick="navigate('profile')" data-page="profile" class="auth-only hidden">Profile</a>
+        <a href="#" onclick="navigate('admin')" data-page="admin" class="admin-only hidden">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="search-bar">
+          <input type="text" id="navSearch" placeholder="Search products…" oninput="handleSearchInput(this.value)" />
+          <span class="search-icon">⌕</span>
+        </div>
+        <button class="icon-btn" onclick="navigate('orders')" id="ordersBtn" title="My Orders">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <span class="badge hidden" id="ordersBadge">0</span>
+        </button>
+        <button class="icon-btn" onclick="navigate('cart')" id="cartBtn" title="Cart">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span class="badge hidden" id="cartBadge">0</span>
+        </button>
+        <div id="authBtns" class="auth-btns">
+          <button class="btn-ghost" onclick="navigate('login')">Log in</button>
+          <button class="btn-primary" onclick="navigate('register')">Sign up</button>
+        </div>
+        <div id="userMenu" class="user-menu hidden">
+          <button class="user-avatar" onclick="toggleUserDropdown()" id="userAvatarBtn">
+            <span id="userInitials">?</span>
+          </button>
+          <div class="user-dropdown hidden" id="userDropdown">
+            <p class="user-name" id="dropdownName">User</p>
+            <hr/>
+            <a href="#" onclick="navigate('profile'); closeDropdown()">Profile</a>
+            <a href="#" onclick="navigate('orders'); closeDropdown()">My Orders</a>
+            <a href="#" onclick="navigate('admin'); closeDropdown()" class="admin-only hidden">Admin Panel</a>
+            <hr/>
+            <a href="#" onclick="logout()" class="logout-link">Log out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- MAIN PAGES -->
+  <main id="app">
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page">
+      <section class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">New Arrivals 2026</span>
+          <h1>Curated Tech &amp;<br/>Lifestyle Essentials</h1>
+          <p>Discover premium gadgets, accessories, and lifestyle products — delivered to your door.</p>
+          <div class="hero-actions">
+            <button class="btn-primary btn-lg" onclick="navigate('products')">Shop Now</button>
+            <button class="btn-ghost btn-lg" onclick="scrollToFeatured()">Featured Items</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-img-stack">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" alt="Headphones" class="hero-img hero-img-1" />
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" alt="Watch" class="hero-img hero-img-2" />
+            <img src="https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=400&q=80" alt="SSD" class="hero-img hero-img-3" />
+          </div>
+        </div>
+      </section>
+
+      <section class="categories-strip" id="categoriesStrip">
+        <div class="section-header">
+          <h2>Shop by Category</h2>
+        </div>
+        <div class="categories-grid" id="categoriesGrid"></div>
+      </section>
+
+      <section class="featured-section" id="featuredSection">
+        <div class="section-header">
+          <h2>Featured Products</h2>
+          <a href="#" onclick="navigate('products')" class="see-all">View All →</a>
+        </div>
+        <div class="products-grid" id="featuredGrid"></div>
+      </section>
+
+      <section class="promo-banner">
+        <div class="promo-content">
+          <span class="promo-tag">Limited Time</span>
+          <h2>Save up to 20% with promo codes</h2>
+          <p>Use <strong>WELCOME50</strong> on your first order • <strong>USC2026</strong> for 15% off • <strong>FLASH20</strong> for 20% off</p>
+          <button class="btn-gold" onclick="navigate('products')">Start Shopping</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- PRODUCTS PAGE -->
+    <div id="page-products" class="page hidden">
+      <div class="page-header">
+        <h1>All Products</h1>
+        <p>Browse our full collection</p>
+      </div>
+      <div class="products-toolbar">
+        <div class="filters">
+          <select id="categoryFilter" onchange="filterProducts()">
+            <option value="">All Categories</option>
+          </select>
+          <select id="sortFilter" onchange="filterProducts()">
+            <option value="">Sort: Default</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="newest">Newest</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <input type="text" id="productSearch" placeholder="Search products…" oninput="filterProducts()" />
+        </div>
+      </div>
+      <div class="products-grid" id="allProductsGrid"></div>
+    </div>
+
+    <!-- PRODUCT DETAIL PAGE -->
+    <div id="page-product-detail" class="page hidden">
+      <div id="productDetailContent"></div>
+    </div>
+
+    <!-- CART PAGE -->
+    <div id="page-cart" class="page hidden">
+      <div class="page-header">
+        <h1>Shopping Cart</h1>
+      </div>
+      <div class="cart-layout">
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-summary" id="cartSummary"></div>
+      </div>
+    </div>
+
+    <!-- CHECKOUT PAGE -->
+    <div id="page-checkout" class="page hidden">
+      <div class="page-header">
+        <h1>Checkout</h1>
+      </div>
+      <div class="checkout-layout">
+        <div class="checkout-left">
+          <div class="checkout-card">
+            <h3>Shipping Address</h3>
+            <div id="addressSelector"></div>
+          </div>
+          <div class="checkout-card">
+            <h3>Payment Method</h3>
+            <div class="payment-options">
+              <label class="radio-option">
+                <input type="radio" name="paymentMethod" value="COD" checked />
+                <span class="radio-custom"></span>
+                <span>Cash on Delivery</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="paymentMethod" value="GCASH" />
+                <span class="radio-custom"></span>
+                <span>GCash (Simulated)</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="paymentMethod" value="CARD" />
+                <span class="radio-custom"></span>
+                <span>Credit/Debit Card (Simulated)</span>
+              </label>
+            </div>
+          </div>
+          <div class="checkout-card">
+            <h3>Promo Code</h3>
+            <div class="promo-row">
+              <input type="text" id="promoInput" placeholder="Enter promo code" style="text-transform:uppercase" />
+              <button class="btn-primary" onclick="applyPromo()">Apply</button>
+            </div>
+            <p id="promoMsg" class="promo-msg"></p>
+          </div>
+          <div class="checkout-card">
+            <h3>Order Notes <span style="font-weight:400;font-size:0.85em;color:var(--muted)">(optional)</span></h3>
+            <textarea id="orderNotes" placeholder="Any special instructions?" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="checkout-right">
+          <div class="checkout-card sticky-card">
+            <h3>Order Summary</h3>
+            <div id="checkoutSummary"></div>
+            <button class="btn-primary btn-full btn-lg" onclick="placeOrder()" id="placeOrderBtn">Place Order</button>
+            <p class="checkout-note">🔒 This is a simulated store. No real payment will be charged.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS PAGE -->
+    <div id="page-orders" class="page hidden">
+      <div class="page-header">
+        <h1>My Orders</h1>
+        <p>Track your order history</p>
+      </div>
+      <div id="ordersList"></div>
+    </div>
+
+    <!-- ORDER DETAIL PAGE -->
+    <div id="page-order-detail" class="page hidden">
+      <div id="orderDetailContent"></div>
+    </div>
+
+    <!-- PROFILE PAGE -->
+    <div id="page-profile" class="page hidden">
+      <div class="page-header">
+        <h1>My Profile</h1>
+      </div>
+      <div class="profile-layout">
+        <div class="profile-tabs">
+          <button class="tab-btn active" onclick="switchProfileTab('info')">Personal Info</button>
+          <button class="tab-btn" onclick="switchProfileTab('password')">Password</button>
+          <button class="tab-btn" onclick="switchProfileTab('addresses')">Addresses</button>
+        </div>
+        <div class="profile-content">
+          <div id="tab-info" class="tab-panel">
+            <form id="profileForm" onsubmit="updateProfile(event)">
+              <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" id="pFirstName" required /></div>
+                <div class="form-group"><label>Last Name</label><input type="text" id="pLastName" required /></div>
+              </div>
+              <div class="form-group"><label>Email</label><input type="email" id="pEmail" disabled /></div>
+              <div class="form-group"><label>Phone</label><input type="tel" id="pPhone" placeholder="+63 9XX XXX XXXX" /></div>
+              <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+          </div>
+          <div id="tab-password" class="tab-panel hidden">
+            <form id="passwordForm" onsubmit="updatePassword(event)">
+              <div class="form-group"><label>Current Password</label><input type="password" id="currPass" required /></div>
+              <div class="form-group"><label>New Password</label><input type="password" id="newPass" required minlength="6" /></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" id="confPass" required minlength="6" /></div>
+              <button type="submit" class="btn-primary">Update Password</button>
+            </form>
+          </div>
+          <div id="tab-addresses" class="tab-panel hidden">
+            <div id="addressList"></div>
+            <button class="btn-primary" onclick="showAddressModal()">+ Add New Address</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="page-login" class="page hidden">
+      <div class="auth-layout">
+        <div class="auth-visual">
+          <div class="auth-visual-content">
+            <div class="auth-logo">QDREON</div>
+            <p>Premium products. Seamless shopping. Delivered to you.</p>
+          </div>
+        </div>
+        <div class="auth-form-wrap">
+          <div class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="auth-sub">Sign in to your account</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+              <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required placeholder="you@example.com" /></div>
+              <div class="form-group">
+                <label>Password</label>
+                <div class="pass-wrap">
+                  <input type="password" id="loginPassword" required placeholder="••••••••" />
+                  <button type="button" class="pass-toggle" onclick="togglePass('loginPassword')">👁</button>
+                </div>
+              </div>
+              <div class="form-footer-row">
+                <label class="checkbox-label"><input type="checkbox" /> Remember me</label>
+                <a href="#" onclick="navigate('forgot-password')" class="link-muted">Forgot password?</a>
+              </div>
+              <button type="submit" class="btn-primary btn-full">Sign In</button>
+            </form>
+            <p class="auth-switch">Don't have an account? <a href="#" onclick="navigate('register')">Sign up</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="page-register" class="page hidden">
+      <div class="auth-layout">
+        <div class="auth-visual">
+          <div class="auth-visual-content">
+            <div class="auth-logo">QDREON</div>
+            <p>Join thousands of happy customers shopping smarter.</p>
+          </div>
+        </div>
+        <div class="auth-form-wrap">
+          <div class="auth-card">
+            <h2>Create account</h2>
+            <p class="auth-sub">Start shopping today</p>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+              <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" id="regFirstName" required placeholder="Juan" /></div>
+                <div class="form-group"><label>Last Name</label><input type="text" id="regLastName" required placeholder="dela Cruz" /></div>
+              </div>
+              <div class="form-group"><label>Email</label><input type="email" id="regEmail" required placeholder="you@example.com" /></div>
+              <div class="form-group"><label>Phone <span class="opt">(optional)</span></label><input type="tel" id="regPhone" placeholder="+63 9XX XXX XXXX" /></div>
+              <div class="form-group">
+                <label>Password</label>
+                <div class="pass-wrap">
+                  <input type="password" id="regPassword" required placeholder="Min. 6 characters" minlength="6" />
+                  <button type="button" class="pass-toggle" onclick="togglePass('regPassword')">👁</button>
+                </div>
+              </div>
+              <button type="submit" class="btn-primary btn-full">Create Account</button>
+            </form>
+            <p class="auth-switch">Already have an account? <a href="#" onclick="navigate('login')">Sign in</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERIFY EMAIL PAGE -->
+    <div id="page-verify" class="page hidden">
+      <div class="auth-layout centered">
+        <div class="auth-card" style="max-width:440px;margin:auto">
+          <div class="verify-icon">✉️</div>
+          <h2>Check your email</h2>
+          <p class="auth-sub" id="verifySubtitle">We sent a 6-digit code to your email</p>
+          <form onsubmit="handleVerify(event)">
+            <div class="code-inputs">
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,0)" onkeydown="codeBack(this,0)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,1)" onkeydown="codeBack(this,1)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,2)" onkeydown="codeBack(this,2)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,3)" onkeydown="codeBack(this,3)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,4)" onkeydown="codeBack(this,4)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,5)" onkeydown="codeBack(this,5)" />
+            </div>
+            <button type="submit" class="btn-primary btn-full">Verify Email</button>
+          </form>
+          <p class="auth-switch"><a href="#" onclick="resendCode()">Resend code</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div id="page-forgot-password" class="page hidden">
+      <div class="auth-layout centered">
+        <div class="auth-card" style="max-width:440px;margin:auto">
+          <h2>Forgot password?</h2>
+          <p class="auth-sub">Enter your email and we'll send you a reset code</p>
+          <form onsubmit="handleForgotPassword(event)">
+            <div class="form-group"><label>Email</label><input type="email" id="forgotEmail" required placeholder="you@example.com" /></div>
+            <button type="submit" class="btn-primary btn-full">Send Reset Code</button>
+          </form>
+          <p class="auth-switch"><a href="#" onclick="navigate('login')">← Back to login</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESET PASSWORD -->
+    <div id="page-reset-password" class="page hidden">
+      <div class="auth-layout centered">
+        <div class="auth-card" style="max-width:440px;margin:auto">
+          <h2>Reset password</h2>
+          <p class="auth-sub">Enter the code we sent and your new password</p>
+          <form onsubmit="handleResetPassword(event)">
+            <div class="code-inputs" style="margin-bottom:1.5rem">
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,0,'reset')" onkeydown="codeBack(this,0)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,1,'reset')" onkeydown="codeBack(this,1)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,2,'reset')" onkeydown="codeBack(this,2)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,3,'reset')" onkeydown="codeBack(this,3)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,4,'reset')" onkeydown="codeBack(this,4)" />
+              <input class="code-digit" maxlength="1" oninput="codeInput(this,5,'reset')" onkeydown="codeBack(this,5)" />
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <div class="pass-wrap">
+                <input type="password" id="resetNewPass" required minlength="6" placeholder="Min. 6 characters" />
+                <button type="button" class="pass-toggle" onclick="togglePass('resetNewPass')">👁</button>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary btn-full">Reset Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN PAGE -->
+    <div id="page-admin" class="page hidden">
+      <div class="admin-layout">
+        <div class="admin-sidebar">
+          <div class="admin-logo">QDREON<span>ADMIN</span></div>
+          <nav class="admin-nav">
+            <a href="#" class="admin-nav-item active" onclick="switchAdminTab('dashboard')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Dashboard
+            </a>
+            <a href="#" class="admin-nav-item" onclick="switchAdminTab('orders')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              Orders
+            </a>
+            <a href="#" class="admin-nav-item" onclick="switchAdminTab('products')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+              Products
+            </a>
+            <a href="#" class="admin-nav-item" onclick="switchAdminTab('users')">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              Users
+            </a>
+          </nav>
+          <button class="btn-ghost admin-back" onclick="navigate('home')">← Back to Store</button>
+        </div>
+        <div class="admin-main">
+          <div id="admin-tab-dashboard" class="admin-tab active">
+            <h2>Dashboard</h2>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="admin-card">
+              <h3>Recent Orders</h3>
+              <table class="admin-table" id="recentOrdersTable">
+                <thead><tr><th>Order #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="admin-tab-orders" class="admin-tab hidden">
+            <h2>All Orders</h2>
+            <div class="admin-card">
+              <table class="admin-table" id="adminOrdersTable">
+                <thead><tr><th>Order #</th><th>Customer</th><th>Amount</th><th>Status</th><th>Payment</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="admin-tab-products" class="admin-tab hidden">
+            <div class="tab-toolbar">
+              <h2>Products</h2>
+              <button class="btn-primary" onclick="showProductModal()">+ Add Product</button>
+            </div>
+            <div class="admin-card">
+              <table class="admin-table" id="adminProductsTable">
+                <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="admin-tab-users" class="admin-tab hidden">
+            <h2>Users</h2>
+            <div class="admin-card">
+              <table class="admin-table" id="adminUsersTable">
+                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <div id="modalOverlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div id="modalBox" class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div id="orderSuccessOverlay" class="modal-overlay hidden">
+    <div class="modal-box success-modal">
+      <div class="success-icon">🎉</div>
+      <h2>Order Placed!</h2>
+      <p id="successOrderId"></p>
+      <p>A confirmation email has been sent to your inbox.</p>
+      <div class="success-actions">
+        <button class="btn-primary" onclick="navigate('orders'); document.getElementById('orderSuccessOverlay').classList.add('hidden')">Track Order</button>
+        <button class="btn-ghost" onclick="navigate('home'); document.getElementById('orderSuccessOverlay').classList.add('hidden')">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
