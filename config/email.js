@@ -4,7 +4,9 @@ require('dotenv').config();
 // ── Transporter (Gmail SMTP) ──────────────────────────────────────────────────
 // Uses Gmail App Password - works without paying for SMTP service
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASSWORD
