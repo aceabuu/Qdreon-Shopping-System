@@ -8,7 +8,6 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "@getbrevo/brevo": "^2.2.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
@@ -17,6 +16,7 @@
     "mysql2": "^3.6.5",
     "nodemailer": "^6.9.9",
     "resend": "^6.12.4",
+    "sib-api-v3-sdk": "^8.5.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
