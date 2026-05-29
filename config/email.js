@@ -1,9 +1,10 @@
-const { TransactionalEmailsApi, SendSmtpEmail, ApiClient } = require('@getbrevo/brevo');
+const brevoSDK = require('@getbrevo/brevo');
 require('dotenv').config();
 
 // ── Brevo API setup ───────────────────────────────────────
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY;
+const defaultClient = brevoSDK.ApiClient.instance;
+defaultClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+const apiInstance = new brevoSDK.TransactionalEmailsApi();
 
 // ── Safe send ─────────────────────────────────────────────
 async function sendEmail(to, subject, htmlContent) {
@@ -12,7 +13,7 @@ async function sendEmail(to, subject, htmlContent) {
     return { simulated: true };
   }
   try {
-    const sendSmtpEmail = new SendSmtpEmail();
+    const sendSmtpEmail = new brevoSDK.SendSmtpEmail();
     sendSmtpEmail.subject = subject;
     sendSmtpEmail.htmlContent = htmlContent;
     sendSmtpEmail.sender = { name: 'Qdreon Shop', email: process.env.BREVO_FROM || 'noreply@qdreon.com' };
