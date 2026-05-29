@@ -138,13 +138,13 @@ router.post('/checkout', requireAuth, async (req, res) => {
     }
 
     // 10. Clear / reset cart
-    await conn.execute('DELETE FROM cart_items WHERE cart_id = ?', [cartId]);
-    await conn.execute('UPDATE carts SET status = "CHECKED_OUT" WHERE cart_id = ?', [cartId]);
-    // Check if an ACTIVE cart already exists before creating one
-    const [existingCart] = await conn.execute('SELECT cart_id FROM carts WHERE user_id = ? AND status = "ACTIVE"', [userId]);
-    if (existingCart.length === 0) {
-    await conn.execute('INSERT INTO carts (user_id, status) VALUES (?, "ACTIVE")', [userId]);
-    }
+   await conn.execute('DELETE FROM cart_items WHERE cart_id = ?', [cartId]);
+   await conn.execute('UPDATE carts SET status = "CHECKED_OUT" WHERE cart_id = ?', [cartId]);
+   // Check if an ACTIVE cart already exists before creating one
+   const [existingCart] = await conn.execute('SELECT cart_id FROM carts WHERE user_id = ? AND status = "ACTIVE"', [userId]);
+   if (existingCart.length === 0) {
+   await conn.execute('INSERT INTO carts (user_id, status) VALUES (?, "ACTIVE")', [userId]);
+   }
 
     await conn.commit();
 
