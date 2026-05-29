@@ -1,21 +1,25 @@
-const { Resend } = require('resend');
+const SibApiV3Sdk = require('@getbrevo/brevo');
 require('dotenv').config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ── Brevo API setup ───────────────────────────────────────
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY;
 
-async function sendEmail(to, subject, html) {
-  if (!process.env.RESEND_API_KEY) {
+// ── Safe send ─────────────────────────────────────────────
+async function sendEmail(to, subject, htmlContent) {
+  if (!process.env.BREVO_API_KEY) {
     console.log(`📧 [SIMULATED EMAIL] To: ${to} | Subject: ${subject}`);
     return { simulated: true };
   }
   try {
-    const data = await resend.emails.send({
-      from: process.env.RESEND_FROM || 'Qdreon Shop <onboarding@resend.dev>',
-      to,
-      subject,
-      html
-    });
-    console.log(`📧 Email sent to ${to}:`, data.id);
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.htmlContent = htmlContent;
+    sendSmtpEmail.sender = { name: 'Qdreon Shop', email: process.env.BREVO_FROM || 'noreply@qdreon.com' };
+    sendSmtpEmail.to = [{ email: to }];
+
+    const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log(`📧 Email sent to ${to}: ${data.messageId}`);
     return data;
   } catch (err) {
     console.error('Email send failed:', err.message);
@@ -23,6 +27,7 @@ async function sendEmail(to, subject, html) {
   }
 }
 
+// ── HTML email wrapper ────────────────────────────────────
 function emailWrapper(title, bodyHtml) {
   return `<!DOCTYPE html>
 <html>
@@ -66,10 +71,12 @@ function emailWrapper(title, bodyHtml) {
 </html>`;
 }
 
+// ── Email templates ───────────────────────────────────────
+
 async function sendVerificationEmail(to, firstName, code) {
   const html = emailWrapper('Verify Your Account', `
     <p class="title">Welcome to Qdreon, ${firstName}! 👋</p>
-    <p class="text">Use the code below to verify your email address.</p>
+    <p class="text">Thanks for signing up. Use the code below to verify your email address.</p>
     <div class="code-box">
       <div class="code">${code}</div>
       <div class="code-label">Expires in 15 minutes</div>
