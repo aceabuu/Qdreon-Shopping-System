@@ -22,11 +22,11 @@ async function sendEmail(to, subject, htmlContent) {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
     console.log(`📧 Email sent to ${to}: ${data.messageId}`);
     return data;
-     } catch (err) {
-     console.error('Email send failed:', err.message);
-     console.error('Brevo error details:', JSON.stringify(err.response?.body || err, null, 2));
-     return null;
-     }
+  } catch (err) {
+    console.error('Email send failed:', err.message);
+    console.error('Brevo error body:', JSON.stringify(err.body ?? err.response?.body ?? {}, null, 2));
+    return null; // never throw — let the app continue
+  }
 }
 
 // ── HTML email wrapper ────────────────────────────────────
